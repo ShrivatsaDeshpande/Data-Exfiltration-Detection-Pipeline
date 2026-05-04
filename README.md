@@ -13,6 +13,7 @@ This project models a simple data pipeline that stores synthetic customer record
 - and a lightweight detection engine for identifying exfiltration-related activity.
 
 The project is aligned with:
+
 - **OWASP API Security Top 10**, especially Broken Object Level Authorization (BOLA),
 - **MITRE ATT&CK Exfiltration** concepts for suspicious data movement detection.
 
@@ -66,6 +67,7 @@ The project is aligned with:
 This project does not use real personal data. It generates a synthetic dataset using Faker and stores it in CSV/SQLite for testing and demonstration.
 
 Generated fields include:
+
 - `owner_user_id`
 - `customer_name`
 - `customer_email`
@@ -85,6 +87,7 @@ In vulnerable mode, the API allows record access by ID without verifying whether
 ### 2. Suspicious Data Exfiltration
 
 The project simulates suspicious export behavior through:
+
 - high-volume exports,
 - repeated exports,
 - and unauthorized record access attempts.
@@ -109,6 +112,7 @@ These activities are logged and analyzed by the detection engine.
 ## Vulnerable vs Secure Mode
 
 ### Vulnerable mode
+
 ```bash
 export SECURE_MODE=false
 ```
@@ -119,6 +123,7 @@ Behavior:
 - BOLA attack works
 
 ### Secure mode
+
 ```bash
 export SECURE_MODE=true
 ```
@@ -131,18 +136,21 @@ Behavior:
 ## Setup
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/ShrivatsaDeshpande/data-exfiltration-detection-pipeline.git
 cd data-exfiltration-detection-pipeline
 ```
 
 ### 2. Create and activate a virtual environment
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
+
 ```bash
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -151,16 +159,19 @@ python -m pip install -r requirements.txt
 ## Running the Project
 
 ### Seed the database
+
 ```bash
 python run_seed.py
 ```
 
 ### Start the API
+
 ```bash
 python run_api.py
 ```
 
 ### Open in browser
+
 - `http://127.0.0.1:8000/`
 - `http://127.0.0.1:8000/health`
 - `http://127.0.0.1:8000/docs`
@@ -174,16 +185,19 @@ pytest -q
 ## Attack Simulations
 
 ### BOLA attack
+
 ```bash
 python attacks/bola_exfiltration.py
 ```
 
 ### Bulk export simulation
+
 ```bash
 python attacks/bulk_exfiltration.py
 ```
 
 ### Repeated export simulation
+
 ```bash
 python attacks/off_hours_exfiltration.py
 ```
@@ -191,11 +205,13 @@ python attacks/off_hours_exfiltration.py
 ## Detection
 
 Run the detection engine:
+
 ```bash
 python run_detection.py
 ```
 
 Generate a summary report:
+
 ```bash
 python -m detections.report
 ```
@@ -205,11 +221,13 @@ python -m detections.report
 The project collects API access and export events into CSV logs and applies rule-based analytics to identify suspicious behavior.
 
 Current detection rules:
+
 - **High-volume export rule** — flags unusually large export operations.
 - **Repeated export rule** — flags repeated exports by the same user.
 - **Denied access rule** — flags blocked object access attempts in secure mode.
 
 Example observed outcomes from the project:
+
 - Vulnerable mode allowed unauthorized reads.
 - Secure mode blocked the same unauthorized reads.
 - Bulk export and repeated export simulations triggered alerts.
@@ -219,24 +237,30 @@ This makes the project not just an API demo, but a small cybersecurity analytics
 ## Evidence
 
 ### FastAPI API documentation
+
 ![FastAPI docs](docs/screenshots/api-docs.png)
 
 ### Vulnerable mode result
+
 ![Vulnerable mode](docs/screenshots/vulnerable-mode.png)
 
 ### Secure mode result
+
 ![Secure mode](docs/screenshots/secure-mode.png)
 
 ### Detection report
+
 ![Detection report](docs/screenshots/detection-report.png)
 
 ## Example Results
 
 ### Vulnerable mode
+
 - `successful_reads: 15`
 - `denied_reads: 0`
 
 ### Secure mode
+
 - `successful_reads: 0`
 - `denied_reads: 15`
 
@@ -271,6 +295,7 @@ This was a collaborative project. The work was planned jointly, while implementa
 ## Limitations
 
 This is a local educational lab and not a production-grade security platform. Current limitations include:
+
 - simple CSV-based logging,
 - simulated identity through headers,
 - no real-time SIEM integration,
@@ -294,6 +319,7 @@ This repository is intended for educational and defensive security research in a
 ## License
 
 Add a license before publishing, for example:
+
 - MIT License
 
 ## Author

@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local environment files
+.env
+
+# Test/cache/coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS/editor files
+.DS_Store
+.vscode/
+.idea/
+
+# Runtime-generated project files
+logs/
+data/generated/
+data/processed/
+
+# Optional: keep raw data folder only if you use it later
+# data/raw/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/

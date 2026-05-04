@@ -1,78 +1,69 @@
 # Data Exfiltration Detection Pipeline
 
-A cybersecurity lab project that simulates data exfiltration and API authorization weaknesses in a controlled local environment, then detects suspicious behavior and demonstrates mitigations using FastAPI, SQLite, synthetic data, and rule-based monitoring. This repository is designed as a portfolio project to showcase vulnerability analysis, detection engineering, secure API design, and practical mitigation of OWASP-style API risks. 
+A collaborative cybersecurity lab project that simulates API-based data exfiltration and Broken Object Level Authorization (BOLA) in a controlled local environment, then detects suspicious behavior and demonstrates mitigation using FastAPI, SQLite, synthetic data, and rule-based monitoring.
 
-## Project Overview
+## Overview
 
 This project models a simple data pipeline that stores synthetic customer records and exposes them through a FastAPI application. It includes:
+
 - a vulnerable mode that allows unauthorized object access,
 - a secure mode that enforces record ownership,
 - attack simulation scripts for suspicious data access and export behavior,
 - CSV-based logging,
 - and a lightweight detection engine for identifying exfiltration-related activity.
 
-The project is inspired by:
+The project is aligned with:
 - **OWASP API Security Top 10**, especially Broken Object Level Authorization (BOLA),
-- **MITRE ATT&CK Exfiltration** tactics and detection ideas.
+- **MITRE ATT&CK Exfiltration** concepts for suspicious data movement detection.
 
 ## Objectives
 
-- Simulate realistic API-driven data exfiltration behavior in a safe local lab.
-- Demonstrate a **Broken Object Level Authorization (BOLA)** issue.
+- Simulate realistic API-driven data exfiltration in a safe local lab.
+- Demonstrate a Broken Object Level Authorization weakness.
 - Show how ownership checks mitigate unauthorized access.
-- Detect suspicious export and access patterns using simple rule-based analytics.
-- Create a strong GitHub portfolio project for cybersecurity and backend security roles.
+- Detect suspicious export and access patterns using simple analytics.
+- Present a portfolio-ready cybersecurity project on GitHub.
 
 ## Tech Stack
 
-- **Backend:** FastAPI, Uvicorn
-- **Database:** SQLite, SQLAlchemy
-- **Data Generation:** Faker, pandas
-- **Testing:** pytest
-- **Attack Simulation:** Python scripts using `requests`
-- **Detection Logic:** CSV log analysis with pandas
+- FastAPI
+- Uvicorn
+- SQLite
+- SQLAlchemy
+- pandas
+- Faker
+- pytest
+- requests
 
 ## Repository Structure
 
 ```text
-data-exfiltration-detection-pipeline/
+.
+├── README.md
+├── SECURITY.md
 ├── api/
-│   ├── app.py
-│   ├── config.py
-│   ├── db.py
-│   ├── models.py
-│   ├── schemas.py
-│   ├── security.py
-│   └── routes/
-│       ├── exports.py
-│       ├── health.py
-│       └── records.py
 ├── attacks/
-│   ├── bola_exfiltration.py
-│   ├── bulk_exfiltration.py
-│   └── off_hours_exfiltration.py
-├── detections/
-│   ├── engine.py
-│   ├── report.py
-│   └── rules.py
-├── pipeline/
-│   ├── generate_data.py
-│   ├── seed_db.py
-│   └── simulate_activity.py
-├── utils/
-│   ├── logger.py
-│   └── time_utils.py
-├── tests/
-├── logs/
+├── dashboard/
 ├── data/
+├── detections/
+├── docs/
+│   ├── architecture.md
+│   ├── mitigations.md
+│   ├── threat_model.md
+│   └── screenshots/
+├── logs/
+├── pipeline/
+├── requirements.txt
 ├── run_api.py
+├── run_detection.py
 ├── run_seed.py
-└── run_detection.py
+├── tests/
+└── utils/
 ```
 
 ## Dataset
 
-This project does **not** use real personal data. It generates a synthetic dataset using Faker and saves it as CSV before loading it into SQLite.
+This project does not use real personal data. It generates a synthetic dataset using Faker and stores it in CSV/SQLite for testing and demonstration.
 
 Generated fields include:
 - `owner_user_id`
@@ -85,35 +76,37 @@ Generated fields include:
 - `risk_score`
 - `last_access_hour`
 
-This allows realistic testing without exposing sensitive real-world data.
-
-## Threat Model
-
-The project focuses on two main security problems:
+## Threats Demonstrated
 
 ### 1. Broken Object Level Authorization (BOLA)
-The vulnerable API allows users to request records by ID without verifying ownership. In insecure mode, an attacker can enumerate record IDs and retrieve data that belongs to other users.
+
+In vulnerable mode, the API allows record access by ID without verifying whether the requester owns that object. OWASP describes BOLA as a major API risk because attackers can manipulate object identifiers to access data they should not be able to see. [web:122][web:254]
 
 ### 2. Suspicious Data Exfiltration
-The project simulates suspicious high-volume data export and repeated export activity through dedicated attack scripts. These behaviors are then logged and flagged by detection rules.
+
+The project simulates suspicious export behavior through:
+- high-volume exports,
+- repeated exports,
+- and unauthorized record access attempts.
+
+These activities are logged and analyzed by the detection engine.
 
 ## Features
 
 - Synthetic dataset generation
 - SQLite-backed API
-- Record listing and export endpoints
-- Local attack simulation scripts
-- Access and export logging
+- Record viewing and export endpoints
+- Attack simulation scripts
+- CSV logging for access and export events
 - Detection rules for:
-  - high-volume exports,
+  - high-volume export,
   - repeated export activity,
   - denied record access attempts
 - Secure mode toggle for mitigation testing
-- Unit tests for core behavior
+- Unit tests with pytest
+- Screenshot-based evidence of vulnerable and secure behavior
 
 ## Vulnerable vs Secure Mode
-
-The project supports two modes:
 
 ### Vulnerable mode
 ```bash
@@ -122,8 +115,8 @@ export SECURE_MODE=false
 
 Behavior:
 - Record ID enumeration succeeds
+- Unauthorized reads are possible
 - BOLA attack works
-- Unauthorized reads are not blocked
 
 ### Secure mode
 ```bash
@@ -132,14 +125,14 @@ export SECURE_MODE=true
 
 Behavior:
 - Ownership checks are enforced
-- Unauthorized object access is denied with HTTP 403
-- Denied access events are logged and detectable
+- Unauthorized object access is denied
+- Denied access attempts are logged and detected
 
-## Installation
+## Setup
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/ShrivatsaDeshpande/Data-Exfiltration-Detection-Pipeline.git
+git clone https://github.com/ShrivatsaDeshpande/data-exfiltration-detection-pipeline.git
 cd data-exfiltration-detection-pipeline
 ```
 
@@ -152,12 +145,7 @@ source .venv/bin/activate
 ### 3. Install dependencies
 ```bash
 python -m pip install --upgrade pip
-python -m pip install fastapi uvicorn sqlalchemy pydantic pandas faker python-dotenv requests pytest httpx
-```
-
-### 4. Optional: save dependencies
-```bash
-python -m pip freeze > requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ## Running the Project
@@ -212,6 +200,36 @@ Generate a summary report:
 python -m detections.report
 ```
 
+## Analytics and Detection
+
+The project collects API access and export events into CSV logs and applies rule-based analytics to identify suspicious behavior.
+
+Current detection rules:
+- **High-volume export rule** — flags unusually large export operations.
+- **Repeated export rule** — flags repeated exports by the same user.
+- **Denied access rule** — flags blocked object access attempts in secure mode.
+
+Example observed outcomes from the project:
+- Vulnerable mode allowed unauthorized reads.
+- Secure mode blocked the same unauthorized reads.
+- Bulk export and repeated export simulations triggered alerts.
+
+This makes the project not just an API demo, but a small cybersecurity analytics pipeline.
+
+## Evidence
+
+### FastAPI API documentation
+![FastAPI docs](docs/screenshots/api-docs.png)
+
+### Vulnerable mode result
+![Vulnerable mode](docs/screenshots/vulnerable-mode.png)
+
+### Secure mode result
+![Secure mode](docs/screenshots/secure-mode.png)
+
+### Detection report
+![Detection report](docs/screenshots/detection-report.png)
+
 ## Example Results
 
 ### Vulnerable mode
@@ -222,92 +240,63 @@ python -m detections.report
 - `successful_reads: 0`
 - `denied_reads: 15`
 
-These results demonstrate the difference between missing authorization checks and enforced ownership-based access control.
+These outputs demonstrate the difference between insecure object access and enforced ownership-based authorization.
 
-## Detection Rules
+## Collaboration
 
-The current version includes three simple rules:
+This was a collaborative project. The work was planned jointly, while implementation responsibilities were divided across team members.
 
-1. **High-volume export rule**  
-   Flags exports above a row threshold.
+### My Contributions
+- Implemented the FastAPI backend and API routes
+- Added synthetic data generation and database seeding
+- Built attack simulation scripts for BOLA and export-based exfiltration
+- Added rule-based detection logic and reporting
+- Wrote tests and debugged environment/setup issues
+- Prepared the technical documentation and project integration
 
-2. **Repeated export rule**  
-   Flags repeated export activity from the same user.
-
-3. **Denied access rule**  
-   Flags unauthorized object access attempts in secure mode.
+### Teammate Contributions
+- Documentation refinement and project presentation support
+- Architecture/threat explanation support
+- Result presentation, screenshots, and project communication support
 
 ## Security Concepts Demonstrated
 
 - Broken Object Level Authorization (BOLA)
 - Object ownership enforcement
-- Data exfiltration behavior
+- Data exfiltration simulation
 - Rule-based anomaly detection
-- Secure-by-design API improvements
-- Synthetic data generation for safe security testing
-
-## Screenshots
-
-Add screenshots here after running the project, for example:
-- FastAPI `/docs` page
-- Vulnerable mode terminal output
-- Secure mode terminal output
-- Detection summary output
-- Sample alerts log
-
-Example Markdown:
-```md
-
-
-
-
-```
-
-## Resume Value
-
-This project demonstrates:
-- secure API development,
-- vulnerability identification and mitigation,
-- data exfiltration simulation,
-- attack detection logic,
-- backend engineering,
-- reproducible testing,
-- and security-focused documentation.
-
-Suggested resume bullet:
-
-- Built a FastAPI-based cybersecurity lab that simulated data exfiltration and Broken Object Level Authorization attacks, implemented ownership-based access controls, and developed rule-based detections aligned with OWASP API Security Top 10 and MITRE ATT&CK exfiltration behaviors.
+- Secure API design improvements
+- Synthetic data usage for safe testing
 
 ## Limitations
 
-This is a local educational lab and not a production-grade detection platform. Current limitations include:
+This is a local educational lab and not a production-grade security platform. Current limitations include:
 - simple CSV-based logging,
-- no authentication beyond a header-based user ID simulation,
-- no SIEM integration,
+- simulated identity through headers,
+- no real-time SIEM integration,
 - no alert deduplication,
-- and no real-time streaming analytics.
+- and no production deployment workflow.
 
 ## Future Improvements
 
 - JWT-based authentication
 - Role-based access control
-- Better alert deduplication
-- Dashboard for alerts and logs
-- Dockerized setup
-- Sigma-like detection rule format
-- Integration with Elasticsearch, Splunk, or a lightweight SIEM workflow
+- Alert deduplication
+- Dashboard for visual analytics
+- Dockerized deployment
+- SIEM-style integration
+- Advanced anomaly detection
 
 ## Ethical Use
 
-This repository is intended for **educational and defensive security research** in a controlled local environment only. Do not use these techniques against systems, APIs, or datasets you do not own or have explicit permission to test.
+This repository is intended for educational and defensive security research in a controlled local environment only. Do not use these techniques against systems, APIs, or datasets you do not own or have explicit permission to test.
 
 ## License
 
-Choose a license before publishing, for example:
+Add a license before publishing, for example:
 - MIT License
-- Apache 2.0
 
 ## Author
 
-Your Name  
-GitHub: https://github.com/ShrivatsaDeshpande
+Shrivatsa Deshpande  
+GitHub: `https://github.com/ShrivatsaDeshpande`

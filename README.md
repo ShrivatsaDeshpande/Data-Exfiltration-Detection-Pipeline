@@ -1,21 +1,57 @@
 # Data Exfiltration Detection Pipeline
 
-A collaborative cybersecurity lab project that simulates API-based data exfiltration and Broken Object Level Authorization (BOLA) in a controlled local environment, then detects suspicious behavior and demonstrates mitigation using FastAPI, SQLite, synthetic data, and rule-based monitoring.
+A collaborative cybersecurity lab project that simulates API-based data exfiltration and Broken Object Level Authorization (BOLA) in a controlled local environment. The project demonstrates vulnerable and secure API behavior, logs suspicious activity, and applies rule-based detection to identify exfiltration-style patterns.
 
 ## Overview
 
-This project models a simple data pipeline that stores synthetic customer records and exposes them through a FastAPI application. It includes:
+This project combines synthetic data generation, a FastAPI application, attack simulation scripts, CSV logging, and a lightweight detection engine. It is designed to show how weak object-level authorization can lead to unauthorized access, and how ownership checks plus monitoring can reduce risk.
 
-- a vulnerable mode that allows unauthorized object access,
-- a secure mode that enforces record ownership,
-- attack simulation scripts for suspicious data access and export behavior,
-- CSV-based logging,
-- and a lightweight detection engine for identifying exfiltration-related activity.
+## Architecture
 
-The project is aligned with:
+```text
+Synthetic Data Generation
+        |
+        v
+SQLite Database Seeded with Customer Records
+        |
+        v
+FastAPI Application
+        |
+        +-----------------------------+
+        |                             |
+        v                             v
+Normal API Usage              Attack Simulation Scripts
+        |                             |
+        +-------------+---------------+
+                      |
+                      v
+              CSV Logs and Alerts
+                      |
+                      v
+          Detection Engine and Reports
+                      |
+                      v
+            Screenshots, Findings, Dashboard
+```
 
-- **OWASP API Security Top 10**, especially Broken Object Level Authorization (BOLA),
-- **MITRE ATT&CK Exfiltration** concepts for suspicious data movement detection.
+### Core Flow
+
+1. `pipeline/` generates synthetic customer data and seeds the database.
+2. `api/` exposes record and export endpoints through FastAPI.
+3. `attacks/` simulates suspicious or unauthorized access patterns in a controlled lab.
+4. `logs/` stores access, export, and alert events in CSV form.
+5. `detections/` reads the logs and generates alerts and reports.
+6. `docs/` stores architecture notes, threat model, mitigations, findings, and screenshots.
+7. `dashboard/` is the analytics layer used to visualize security activity and compare vulnerable versus secure behavior.
+
+### Security Modes
+
+- **Vulnerable mode** demonstrates Broken Object Level Authorization.
+- **Secure mode** enforces ownership-based access control and logs denied requests.
+
+### Why this architecture matters
+
+This structure shows the full lifecycle of a security issue: data creation, exposure, attack simulation, detection, mitigation, and evidence presentation. It is intentionally simple so that the cybersecurity story is easy to follow and easy to reproduce.
 
 ## Objectives
 
@@ -49,6 +85,7 @@ The project is aligned with:
 ├── detections/
 ├── docs/
 │   ├── architecture.md
+│   ├── findings.md
 │   ├── mitigations.md
 │   ├── threat_model.md
 │   └── screenshots/

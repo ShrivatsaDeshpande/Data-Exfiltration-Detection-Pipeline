@@ -363,6 +363,6 @@ Add a license before publishing, for example:
 
 Shrivatsa Deshpande  
 GitHub: `https://github.com/ShrivatsaDeshpande`
+
 Xiaoxu Jing 
-        
 GitHub: `https://github.com/xiaoxujing1227`

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Analytics Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- PapaParse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-layer bg-grid"></div>
+    <div class="bg-layer bg-orbs"></div>
+
+    <div class="dashboard-container">
+        <header>
+            <div class="header-content">
+                <img src="logo.png" alt="Shrivatsa Logo" class="header-logo" />
+                <div>
+                    <h1>🛡️ Security Analytics Dashboard</h1>
+                    <p>Visualize data exfiltration detection results, alerts, and access patterns.</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="kpi-row">
+            <div class="kpi-card" style="animation-delay: 0.1s">
+                <h3>Total API Requests</h3>
+                <div class="kpi-value" id="kpi-total-requests">0</div>
+            </div>
+            <div class="kpi-card" style="animation-delay: 0.2s">
+                <h3>Successful Reads</h3>
+                <div class="kpi-value" id="kpi-success-reads" style="color: #2ecc71;">0</div>
+            </div>
+            <div class="kpi-card" style="animation-delay: 0.3s">
+                <h3>Denied Reads</h3>
+                <div class="kpi-value" id="kpi-denied-reads" style="color: #e74c3c;">0</div>
+            </div>
+            <div class="kpi-card" style="animation-delay: 0.4s">
+                <h3>Total Exports</h3>
+                <div class="kpi-value" id="kpi-total-exports" style="color: #3498db;">0</div>
+            </div>
+            <div class="kpi-card" style="animation-delay: 0.5s">
+                <h3>Total Alerts</h3>
+                <div class="kpi-value" id="kpi-total-alerts" style="color: #f39c12;">0</div>
+            </div>
+        </section>
+
+        <section class="charts-row">
+            <div class="chart-container" style="animation-delay: 0.6s">
+                <h2>Vulnerable vs Secure Mode</h2>
+                <canvas id="modeChart"></canvas>
+            </div>
+            <div class="chart-container" style="animation-delay: 0.7s">
+                <h2>Alerts Breakdown by Rule</h2>
+                <div class="pie-wrapper">
+                    <canvas id="ruleChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="charts-row">
+            <div class="chart-container" style="animation-delay: 0.8s">
+                <h2>Export Activity Over Time</h2>
+                <canvas id="exportChart"></canvas>
+            </div>
+            <div class="chart-container" style="animation-delay: 0.9s">
+                <h2>Alerts by User</h2>
+                <canvas id="userChart"></canvas>
+            </div>
+        </section>
+
+        <section class="table-section chart-container" style="animation-delay: 1.0s">
+            <h2>Recent High-Severity Alerts</h2>
+            <div class="table-responsive">
+                <table id="alertsTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Rule Triggered</th>
+                            <th>Severity</th>
+                            <th>User ID</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

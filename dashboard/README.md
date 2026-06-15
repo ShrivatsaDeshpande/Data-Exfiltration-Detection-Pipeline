@@ -12,6 +12,9 @@ This makes the project stronger as a collaborative cybersecurity and data analyt
 
 The dashboard is intended to answer questions such as:
 
+- HTML/CSS/JS frontend located in `dashboard/public/`.
+- Fetches CSV logs via `/logs/` route served by the API.
+- Computes metrics dynamically and renders using Chart.js.
 - How many record reads were successful versus denied?
 - How many export events occurred?
 - Which detection rules triggered the most alerts?
@@ -170,6 +173,21 @@ Possible future improvements include:
 
 ## Status
 
-**Current status:** planned / in progress
+**Current status:** completed
 
-The backend pipeline, attack simulations, detections, screenshots, and documentation are already present. The dashboard layer is the next step for turning those outputs into a more polished visual security analytics experience.
+The backend pipeline, attack simulations, detections, screenshots, and documentation are already present. The dashboard layer has been implemented using Streamlit to turn those outputs into a polished visual security analytics experience.
+
+## Running the Dashboard
+
+This folder contains the Custom HTML/CSS Web Dashboard.
+
+## Running the Dashboard
+
+The dashboard is served statically by the main FastAPI application. 
+
+1. Ensure the API is running from the root directory:
+   ```bash
+   python run_api.py
+   ```
+2. Open your browser and navigate to:
+   **http://127.0.0.1:8000/dashboard/index.html**

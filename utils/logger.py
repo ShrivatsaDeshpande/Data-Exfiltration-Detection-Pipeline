@@ -18,7 +18,7 @@ def _ensure_file(path: Path, headers: list[str]):
 
 def reset_log_files():
     for path, headers in [
-        (ACCESS_LOG, ["timestamp", "event_type", "actor_user_id", "target_record_id", "rows_returned", "status", "reason", "ip_address", "user_agent"]),
+        (ACCESS_LOG, ["timestamp", "mode", "event_type", "actor_user_id", "target_record_id", "rows_returned", "status", "reason", "ip_address", "user_agent"]),
         (EXPORT_LOG, ["timestamp", "actor_user_id", "rows_exported", "export_target"]),
         (ALERT_LOG, ["timestamp", "rule_name", "severity", "actor_user_id", "details"]),
     ]:
@@ -27,16 +27,23 @@ def reset_log_files():
             writer.writerow(headers)
 
 
-def log_access_event(event_type: str, actor_user_id: int, target_record_id: int | None,
+import os
+from typing import Optional
+
+def log_access_event(event_type: str, actor_user_id: int, target_record_id: Optional[int],
                      rows_returned: int, status: str, reason: str, ip_address: str, user_agent: str):
+    
+    current_mode = "Secure" if os.getenv("SECURE_MODE", "false").lower() == "true" else "Vulnerable"
+    
     _ensure_file(
         ACCESS_LOG,
-        ["timestamp", "event_type", "actor_user_id", "target_record_id", "rows_returned", "status", "reason", "ip_address", "user_agent"]
+        ["timestamp", "mode", "event_type", "actor_user_id", "target_record_id", "rows_returned", "status", "reason", "ip_address", "user_agent"]
     )
     with open(ACCESS_LOG, "a", newline="") as f:
         writer = csv.writer(f)
         writer.writerow([
             utc_now_iso(),
+            current_mode,
             event_type,
             actor_user_id,
             target_record_id,

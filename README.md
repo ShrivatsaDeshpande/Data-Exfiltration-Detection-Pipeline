@@ -213,6 +213,14 @@ python run_api.py
 - `http://127.0.0.1:8000/health`
 - `http://127.0.0.1:8000/docs`
 
+### Run the Dashboard
+
+1. Ensure the API is running (`python run_api.py`).
+2. Open your browser and go to:
+   ```text
+   http://127.0.0.1:8000/dashboard/index.html
+   ```
+
 ## Running Tests
 
 ```bash

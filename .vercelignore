@@ -1,18 +1,6 @@
-# Ignore Python backend folders from Vercel Serverless Function scanner
-api/
-pipeline/
-attacks/
-detections/
-tests/
-utils/
-data/
-
-# Environment and Python artifacts
 .venv/
 __pycache__/
-*.py
-*.pyc
-requirements.txt
 .pytest_cache/
 .hypothesis/
 .env*
+tests/

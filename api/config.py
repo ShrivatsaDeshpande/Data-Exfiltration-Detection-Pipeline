@@ -9,9 +9,22 @@ GENERATED_DIR = DATA_DIR / "generated"
 LOGS_DIR = BASE_DIR / "logs"
 DB_PATH = PROCESSED_DIR / "exfiltration_lab.db"
 
-RAW_DIR.mkdir(parents=True, exist_ok=True)
-PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-LOGS_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+except (OSError, PermissionError):
+    DATA_DIR = Path("/tmp/data")
+    RAW_DIR = DATA_DIR / "raw"
+    PROCESSED_DIR = DATA_DIR / "processed"
+    GENERATED_DIR = DATA_DIR / "generated"
+    LOGS_DIR = Path("/tmp/logs")
+    DB_PATH = PROCESSED_DIR / "exfiltration_lab.db"
+
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 SECURE_MODE = os.getenv("SECURE_MODE", "false").lower() == "true"

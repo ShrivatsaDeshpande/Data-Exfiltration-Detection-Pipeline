@@ -1,0 +1,8 @@
+{
+  "name": "data-exfiltration-dashboard",
+  "version": "1.0.0",
+  "description": "Security Analytics Dashboard for Data Exfiltration Detection Pipeline",
+  "scripts": {
+    "build": "mkdir -p dist/logs && cp -r dashboard/public/* dist/ && cp -r logs/* dist/logs/"
+  }
+}

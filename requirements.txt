@@ -30,3 +30,5 @@ typing_extensions
 urllib3
 uvicorn
 
+gspread
+oauth2client

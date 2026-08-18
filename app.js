@@ -334,4 +334,8 @@ async function loadDashboard() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', loadDashboard);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+} else {
+    loadDashboard();
+}

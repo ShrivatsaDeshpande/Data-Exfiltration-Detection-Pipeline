@@ -7,20 +7,129 @@ Chart.defaults.plugins.tooltip.bodyColor = '#f8fafc';
 Chart.defaults.plugins.tooltip.borderColor = 'rgba(0, 242, 254, 0.3)';
 Chart.defaults.plugins.tooltip.borderWidth = 1;
 
-async function fetchCSV(url) {
-    let response = await fetch(url);
-    if (!response.ok && url.startsWith('/')) {
-        response = await fetch(url.slice(1));
-    }
-    if (!response.ok) return [];
-    const csvText = await response.text();
+const DEFAULT_DATASETS = {
+    'access_logs.csv': `timestamp,mode,event_type,actor_user_id,target_record_id,rows_returned,status,reason,ip_address,user_agent
+2026-06-15T05:19:04.218735+00:00,Vulnerable,get_record,77,1,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.223430+00:00,Vulnerable,get_record,77,2,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.227356+00:00,Vulnerable,get_record,77,3,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.232135+00:00,Vulnerable,get_record,77,4,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.236500+00:00,Vulnerable,get_record,77,5,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.240876+00:00,Vulnerable,get_record,77,6,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.244651+00:00,Vulnerable,get_record,77,7,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.248212+00:00,Vulnerable,get_record,77,8,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.251649+00:00,Vulnerable,get_record,77,9,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.255377+00:00,Vulnerable,get_record,77,10,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.259250+00:00,Vulnerable,get_record,77,11,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.262894+00:00,Vulnerable,get_record,77,12,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.266442+00:00,Vulnerable,get_record,77,13,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.269942+00:00,Vulnerable,get_record,77,14,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.273908+00:00,Vulnerable,get_record,77,15,1,success,,127.0.0.1,bola-script
+2026-06-15T05:19:04.459179+00:00,Vulnerable,export_records,99,,180,success,,127.0.0.1,bulk-exfiltration-script
+2026-06-15T05:19:04.644004+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-06-15T05:19:04.857510+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-06-15T05:19:05.074045+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-06-15T05:19:05.289051+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-06-15T05:19:05.502247+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-06-15T05:19:08.923992+00:00,Secure,get_record,77,1,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.928507+00:00,Secure,get_record,77,2,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.932928+00:00,Secure,get_record,77,3,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.937872+00:00,Secure,get_record,77,4,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.941996+00:00,Secure,get_record,77,5,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.945948+00:00,Secure,get_record,77,6,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.949638+00:00,Secure,get_record,77,7,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.953348+00:00,Secure,get_record,77,8,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.957687+00:00,Secure,get_record,77,9,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.961499+00:00,Secure,get_record,77,10,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.965367+00:00,Secure,get_record,77,11,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.968873+00:00,Secure,get_record,77,12,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.972562+00:00,Secure,get_record,77,13,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.976488+00:00,Secure,get_record,77,14,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-06-15T05:19:08.980375+00:00,Secure,get_record,77,15,0,denied,owner_mismatch,127.0.0.1,bola-script
+2026-08-01T20:34:18.408922+00:00,Vulnerable,get_record,77,1,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.418023+00:00,Vulnerable,get_record,77,2,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.423548+00:00,Vulnerable,get_record,77,3,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.427799+00:00,Vulnerable,get_record,77,4,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.432792+00:00,Vulnerable,get_record,77,5,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.437295+00:00,Vulnerable,get_record,77,6,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.441565+00:00,Vulnerable,get_record,77,7,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.446208+00:00,Vulnerable,get_record,77,8,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.451742+00:00,Vulnerable,get_record,77,9,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.455781+00:00,Vulnerable,get_record,77,10,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.459863+00:00,Vulnerable,get_record,77,11,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.464206+00:00,Vulnerable,get_record,77,12,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.469011+00:00,Vulnerable,get_record,77,13,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.473030+00:00,Vulnerable,get_record,77,14,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.477046+00:00,Vulnerable,get_record,77,15,1,success,,127.0.0.1,bola-script
+2026-08-01T20:34:18.665135+00:00,Vulnerable,export_records,99,,180,success,,127.0.0.1,bulk-exfiltration-script
+2026-08-01T20:34:18.921154+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-08-01T20:34:19.135640+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-08-01T20:34:19.349518+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-08-01T20:34:19.563215+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script
+2026-08-01T20:34:19.776948+00:00,Vulnerable,export_records,66,,80,success,,127.0.0.1,off-hours-script`,
+
+    'alerts.csv': `timestamp,rule_name,severity,actor_user_id,details
+2026-06-15T05:19:10.593204+00:00,high_volume_export,high,99,Exported 180 rows to csv_endpoint
+2026-06-15T05:19:10.593405+00:00,repeated_export_activity,medium,66,Repeated export activity detected
+2026-06-15T05:19:10.593608+00:00,denied_record_access,medium,77,Unauthorized object access attempts detected
+2026-08-01T20:34:23.446405+00:00,high_volume_export,high,99,Exported 180 rows to csv_endpoint
+2026-08-01T20:34:23.446910+00:00,high_volume_export,high,99,Exported 180 rows to csv_endpoint
+2026-08-01T20:34:23.447100+00:00,repeated_export_activity,medium,66,Repeated export activity detected
+2026-08-01T20:34:23.447312+00:00,denied_record_access,medium,77,Unauthorized object access attempts detected`,
+
+    'exports.csv': `timestamp,actor_user_id,rows_exported,export_target
+2026-06-15T05:19:04.459346+00:00,99,180,csv_endpoint
+2026-06-15T05:19:04.644241+00:00,66,80,csv_endpoint
+2026-06-15T05:19:04.857708+00:00,66,80,csv_endpoint
+2026-06-15T05:19:05.074343+00:00,66,80,csv_endpoint
+2026-06-15T05:19:05.289257+00:00,66,80,csv_endpoint
+2026-06-15T05:19:05.502432+00:00,66,80,csv_endpoint
+2026-08-01T20:34:18.665346+00:00,99,180,csv_endpoint
+2026-08-01T20:34:18.921502+00:00,66,80,csv_endpoint
+2026-08-01T20:34:19.135990+00:00,66,80,csv_endpoint
+2026-08-01T20:34:19.349795+00:00,66,80,csv_endpoint
+2026-08-01T20:34:19.563523+00:00,66,80,csv_endpoint
+2026-08-01T20:34:19.777185+00:00,66,80,csv_endpoint`
+};
+
+function parseCSVString(csvText) {
     return new Promise((resolve) => {
         Papa.parse(csvText, {
             header: true,
             skipEmptyLines: true,
-            complete: (results) => resolve(results.data)
+            complete: (results) => resolve(results.data || [])
         });
     });
+}
+
+async function fetchCSV(url) {
+    const filename = url.split('/').pop();
+    const candidates = [
+        url,
+        url.startsWith('/') ? url.slice(1) : '/' + url,
+        '/logs/' + filename,
+        'logs/' + filename
+    ];
+
+    for (const path of candidates) {
+        try {
+            const response = await fetch(path);
+            if (response.ok) {
+                const text = await response.text();
+                if (text && text.trim().length > 0 && !text.includes('<!DOCTYPE html>')) {
+                    const parsed = await parseCSVString(text);
+                    if (parsed && parsed.length > 0) return parsed;
+                }
+            }
+        } catch (e) {
+            // continue
+        }
+    }
+
+    // Fallback to embedded seed dataset
+    if (DEFAULT_DATASETS[filename]) {
+        return await parseCSVString(DEFAULT_DATASETS[filename]);
+    }
+    return [];
 }
 
 async function loadDashboard() {

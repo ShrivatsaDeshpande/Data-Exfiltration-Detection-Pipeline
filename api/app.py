@@ -32,12 +32,17 @@ if dashboard_dir.exists():
 
 @app.get("/logs/{filename}")
 def get_log_file(filename: str):
-    # Try dynamic runtime logs dir first
-    if (LOGS_DIR / filename).exists():
-        return FileResponse(LOGS_DIR / filename, media_type="text/csv")
-    # Fallback to repo static logs dir
-    if (repo_logs_dir / filename).exists():
-        return FileResponse(repo_logs_dir / filename, media_type="text/csv")
+    candidates = [
+        Path(__file__).parent / "logs" / filename,
+        LOGS_DIR / filename,
+        BASE_DIR / "api" / "logs" / filename,
+        BASE_DIR / "logs" / filename,
+        BASE_DIR / "dashboard" / "public" / "logs" / filename,
+        BASE_DIR / "public" / "logs" / filename,
+    ]
+    for path in candidates:
+        if path.exists():
+            return FileResponse(path, media_type="text/csv")
     return HTMLResponse(status_code=404)
 
 

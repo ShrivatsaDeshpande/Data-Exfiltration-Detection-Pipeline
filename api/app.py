@@ -41,8 +41,15 @@ def get_log_file(filename: str):
     return HTMLResponse(status_code=404)
 
 
+from fastapi import Request
+
 @app.get("/")
-def root():
+def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept:
+        index_path = dashboard_dir / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path, media_type="text/html")
     return {
         "project": "Data Exfiltration Detection in a Simple Data Pipeline",
         "status": "running"

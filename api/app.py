@@ -3,7 +3,10 @@ from fastapi import FastAPI
 from api.db import Base, engine
 from api.routes import exports, health, records
 
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception:
+    pass
 
 app = FastAPI(
     title="Data Exfiltration Detection API",
@@ -20,22 +23,30 @@ app.include_router(records.router)
 app.include_router(exports.router)
 
 dashboard_dir = BASE_DIR / "dashboard" / "public"
+repo_logs_dir = BASE_DIR / "logs"
 
 # Serve the static web dashboard
 if dashboard_dir.exists():
     app.mount("/dashboard", StaticFiles(directory=dashboard_dir, html=True), name="dashboard")
 
-# Serve the logs for the dashboard to fetch
-if LOGS_DIR.exists():
-    app.mount("/logs", StaticFiles(directory=LOGS_DIR), name="logs")
+
+@app.get("/logs/{filename}")
+def get_log_file(filename: str):
+    # Try dynamic runtime logs dir first
+    if (LOGS_DIR / filename).exists():
+        return FileResponse(LOGS_DIR / filename, media_type="text/csv")
+    # Fallback to repo static logs dir
+    if (repo_logs_dir / filename).exists():
+        return FileResponse(repo_logs_dir / filename, media_type="text/csv")
+    return HTMLResponse(status_code=404)
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 def root():
-    index_path = dashboard_dir / "index.html"
-    if index_path.exists():
-        return HTMLResponse(content=index_path.read_text())
-    return HTMLResponse(content="<h1>Data Exfiltration Detection Pipeline</h1>")
+    return {
+        "project": "Data Exfiltration Detection in a Simple Data Pipeline",
+        "status": "running"
+    }
 
 
 @app.get("/style.css")

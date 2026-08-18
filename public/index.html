@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Analytics Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- PapaParse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-layer bg-grid"></div>
+    <div class="bg-layer bg-orbs"></div>
+
+    <div class="dashboard-container">
+        <header>
+            <div class="header-content">
+                <img src="logo.png" alt="Shrivatsa Logo" class="header-logo" />
+                <div>
+                    <h1>🛡️ Security Analytics Dashboard</h1>
+                    <p>Detecting Data Exfiltration Patterns & Broken Object Level Authorization (BOLA)</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="kpi-row">
+            <div class="kpi-card" style="animation-delay: 0.1s">
+                <h3>Total API Requests</h3>
+                <div class="kpi-value" id="kpi-total-requests">0</div>
+            </div>
+            <div class="kpi-card" style="animation-delay: 0.2s">
+                <h3>Successful Reads</h3>
+                <div class="kpi-value" id="kpi-success-reads" style="color: #00f2fe;">0</div>
+            </div>
+            <div class="kpi-card kpi-alert" style="animation-delay: 0.3s">
+                <h3>Denied Reads</h3>
+                <div class="kpi-value" id="kpi-denied-reads" style="color: #ff0844;">0</div>
+            </div>
+            <div class="kpi-card" style="animation-delay: 0.4s">
+                <h3>Total Exports</h3>
+                <div class="kpi-value" id="kpi-total-exports" style="color: #b12a5b;">0</div>
+            </div>
+            <div class="kpi-card kpi-alert" style="animation-delay: 0.5s">
+                <h3>Total Alerts</h3>
+                <div class="kpi-value" id="kpi-total-alerts" style="color: #ffb199;">0</div>
+            </div>
+        </section>
+
+        <!-- New Section: Tableau Advanced Analytics -->
+        <section class="charts-row">
+            <div class="chart-container span-2" style="animation-delay: 0.6s">
+                <h2>📊 Advanced Tableau Analytics</h2>
+                <p class="section-desc">Interactive data exfiltration dashboard powered by Tableau Public.</p>
+                <div class="tableau-embed-content" style="width: 100%; min-height: 800px; position: relative; margin-top: 20px;">
+                    <!-- Embed Code Start -->
+                    <div class='tableauPlaceholder' id='viz1786654765943' style='position: relative; width: 100%; height: 100%;'>
+                        <noscript>
+                            <a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Da&#47;DataExfiltrationDashboard&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a>
+                        </noscript>
+                        <object class='tableauViz' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+                            <param name='embed_code_version' value='3' /> 
+                            <param name='site_root' value='' />
+                            <param name='name' value='DataExfiltrationDashboard&#47;Dashboard1' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='yes' />
+                            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Da&#47;DataExfiltrationDashboard&#47;Dashboard1&#47;1.png' /> 
+                            <param name='animate_transition' value='yes' />
+                            <param name='display_static_image' value='yes' />
+                            <param name='display_spinner' value='yes' />
+                            <param name='display_overlay' value='yes' />
+                            <param name='display_count' value='yes' />
+                            <param name='language' value='en-GB' />
+                        </object>
+                    </div>                
+                    <script type='text/javascript'>                    
+                        var divElement = document.getElementById('viz1786654765943');                    
+                        var vizElement = divElement.getElementsByTagName('object')[0];                    
+                        vizElement.style.width='100%';vizElement.style.height='800px';
+                        var scriptElement = document.createElement('script');                    
+                        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
+                        vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+                    </script>
+                    <!-- Embed Code End -->
+                </div>
+            </div>
+        </section>
+
+        <!-- New Section: Exfiltration Lifecycle & Threat Actor Audit -->
+        <section class="charts-row">
+            <div class="chart-container span-2" style="animation-delay: 0.6s">
+                <h2>🔍 Threat Actor Audit (Focus: User 66)</h2>
+                <p class="section-desc">Analyzing repeated export patterns directly correlating to detected anomalies.</p>
+                <div class="actor-audit-content">
+                    <canvas id="threatActorChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="charts-row">
+            <div class="chart-container" style="animation-delay: 0.7s">
+                <h2>Exfiltration Pattern Lifecycle</h2>
+                <div class="lifecycle-timeline" id="lifecycle-timeline">
+                    <!-- Lifecycle steps injected via JS -->
+                </div>
+            </div>
+            <div class="chart-container" style="animation-delay: 0.8s">
+                <h2>Vulnerable vs Secure Access</h2>
+                <canvas id="modeChart"></canvas>
+            </div>
+        </section>
+
+        <section class="charts-row">
+            <div class="chart-container" style="animation-delay: 0.9s">
+                <h2>Alerts Breakdown by Rule</h2>
+                <div class="pie-wrapper">
+                    <canvas id="ruleChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container" style="animation-delay: 1.0s">
+                <h2>Alert Distribution by User</h2>
+                <canvas id="userChart"></canvas>
+            </div>
+        </section>
+
+        <section class="table-section chart-container" style="animation-delay: 1.1s">
+            <h2>Recent High-Severity Alerts</h2>
+            <div class="table-responsive">
+                <table id="alertsTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Rule Triggered</th>
+                            <th>Severity</th>
+                            <th>User ID</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
